@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Players collection - read only for now
+    match /players/{playerId} {
+      allow read: if true;
+      allow write: if false; // Only allow writes through admin
+    }
+    
+    // Daily questions - read only
+    match /daily_questions/{date} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // User scores (if we add user system later)
+    match /user_scores/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
